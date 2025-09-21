@@ -1,8 +1,18 @@
 const model = require('../models/apiModel');
+const bcrypt = require('bcrypt');
 
+// CREAR USUARIO / REGISTRO
 const createItem = async (req, res) => {
   try {
-    await model.createItem(req.body);
+    const data = { ...req.body };
+    
+    // Hashear la contraseña
+    if (data.user_password) {
+      const saltRounds = 10;
+      data.user_password = await bcrypt.hash(data.user_password, saltRounds);
+    }
+
+    await model.createItem(data);
     res.status(201).json({ message: 'Item created successfully' });
   } catch (err) {
     console.error('Create error:', err.message);
@@ -10,6 +20,42 @@ const createItem = async (req, res) => {
   }
 };
 
+// LOGIN DE USUARIO
+const loginUser = async (req, res) => {
+  try {
+    const { identifier, user_password } = req.body;
+
+    if (!identifier || !user_password) {
+      return res.status(400).json({ message: 'Faltan credenciales' });
+    }
+
+    // Obtener todos los usuarios y filtrar por username o email
+    const users = await model.getItems();
+    const user = users.find(u => u.username === identifier || u.email === identifier);
+
+    if (!user) {
+      return res.status(401).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Comparar contraseña con bcrypt
+    const match = await bcrypt.compare(user_password, user.user_password);
+    if (!match) {
+      return res.status(401).json({ message: 'Contraseña incorrecta' });
+    }
+
+    // Login exitoso
+    res.status(200).json({
+      message: 'Login exitoso',
+      user: { id: user.id, username: user.username, email: user.email }
+    });
+
+  } catch (err) {
+    console.error('Login error:', err.message);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// RESTO DE CONTROLADORES
 const getItems = async (req, res) => {
   try {
     const items = await model.getItems();
@@ -53,4 +99,11 @@ const deleteItemById = async (req, res) => {
   }
 };
 
-module.exports = { createItem, getItems, getItemById, updateItemById, deleteItemById };
+module.exports = { 
+  createItem, 
+  loginUser, 
+  getItems, 
+  getItemById, 
+  updateItemById, 
+  deleteItemById 
+};
