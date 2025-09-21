@@ -13,11 +13,5 @@ services:
     env_file:
       - .env
     networks:
-      - baronette_db_api_network
-      - webtest
-
-networks:
-  baronette_db_api_network:
-    external: true
-  webtest:
-    external: true
+      - your-db-network
+      - your-app-network
