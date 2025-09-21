@@ -1,178 +1,211 @@
-
-# Baronette Data API
-#### Esta API es parte de un sistema que conecta una aplicación web con una base de datos PostgreSQL. Permite la gestión de usuarios, incluyendo registro, login y verificación de privilegios de administrador. Está construida utilizando Node.js con Express, y la base de datos es administrada con PostgreSQL. Se ha desarrollado bajo un marco REST, para facilitar su despliegue, mantenimiento y escalabilidad.
-
----
-## Tabla de contenidos
-1. **Estructura del proyecto**
-2. **Instalación y configuración**
-3. **Endpoints**
-4. **Modelo de Base de Datos**
-5. **Despliegue**
-6. **Dependencias**
-7. **Licencia**
+# Modular PostgreSQL Web API
+#### This API connects a web application to a PostgreSQL database. It supports user management (registration, login, and CRUD operations). Built with Node.js and Express, it follows a RESTful, modular architecture to ensure easy maintenance, scalability, and deployment.
 
 ---
-## 1. Estructura del proyecto
+
+## Table of Contents
+1. [Project Structure](#project-structure)
+2. [Installation & Configuration](#installation--configuration)
+3. [Endpoints](#endpoints)
+4. [Database Model](#database-model)
+5. [Deployment](#deployment)
+6. [Dependencies](#dependencies)
+7. [License](#license)
+
+---
+
+## Project Structure
 ```
-baronette-api/
-├── src/
-│   ├── app.js................... Punto de entrada de la aplicación
-│   ├── routes/
-│   │   └── userRoutes.js........ Definición de las rutas relacionadas con los usuarios
-│   ├── controllers/
-│   │   └── userController.js.... Lógica de control para las solicitudes de los usuarios
-│   ├── models/
-│   │   └── userModel.js......... Consultas a la base de datos y procesamiento de la información
-│   └── config/
-│       └── database.js.......... Configuración de la conexión a PostgreSQL
-├── docker-compose.yml........... Configuración de Docker para levantar la API
-├── Dockerfile................... Archivo Docker para crear la imagen de la API
-├── .env......................... Archivo de configuración de variables de entorno
-├── package.json................. Dependencias y scripts del proyecto
-├── package-lock.json............ Archivo de lock de dependencias
+project-root/
+├── Dockerfile
+├── README.md
+├── docker-compose.example
+├── docker-compose.yml
+├── front-end-example/
+│   ├── README.md
+│   ├── docker-compose.yml
+│   └── html/
+│       ├── api/
+│       │   ├── config.js
+│       │   ├── dashboard.js
+│       │   ├── login.js
+│       │   └── register.js
+│       ├── dashboard.html
+│       ├── index.html
+│       ├── login.html
+│       └── register.html
+├── package-lock.json
+├── package.json
+└── src/
+    ├── app.js..................... Entry point of the application
+    ├── config/
+    │   ├── database.js............ PostgreSQL database configuration
+    │   └── schemaConfig.js........ Table and column configuration
+    ├── controllers/
+    │   └── apiController.js....... Business logic for API endpoints
+    ├── models/
+    │   └── apiModel.js............ Database queries and data handling
+    └── routes/
+        └── apiRoutes.js........... API route definitions
+```
+
+---
+
+## Installation & Configuration
+
+### Prerequisites
+- Node.js (LTS recommended)
+- Docker & Docker compose
+- PostgreSQL database (local or remote)
+
+### Clone the repository
+```bash
+git clone https://github.com/propstgonz/dockerized-web-api-template.git
+cd dockerized-web-api-template
+```
+
+### Environment variables
+Create a `.env` file in the project root based on `.env-sample`:
+```bash
+# Server configuration
+PORT=3000
+
+# PostgreSQL configuration
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_HOST=db_ip
+DB_PORT=5432
+DB_NAME=your_database_name
+
+# Table configuration (all fields are easily configurable)
+TABLE_NAME=users
+PRIMARY_KEY=id
+COLUMNS=username,email,user_password
+```
+> You can easily modify `TABLE_NAME` and `COLUMNS` to adapt the API to different tables or add/remove fields without changing the source code.
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Start the application
+- **With Docker**:
+```bash
+docker compose up -d --build
 ```
 ---
-## 2. Instalación y configuración
-1. ### Requisitos previos:
-    - Node.js (se recomienda usar una versión LTS para asegurar la estabilidad)
-    - Docker (para desplegar el servicio de forma independiente)
-    - Servicio de PostgreSQL instalado o acceso a una base de datos remota
-2. ### Clonar el repositorio:
-    ```bash
-    git clone https://github.com/propstg/baronette-web-api.git
-    cd baronette-api
-    ```
-3. ### Configuración de las variables de entorno:
-    Crea un archivo ``.env`` en la raíz del proyecto con las siguientes variables:
-    ```bash
-    # Puerto donde corre la API
-    PORT=3000
 
-    # Configuración de la base de datos PostgreSQL
-    DB_USER=tu_usuario
-    DB_HOST=localhost
-    DB_NAME=nombre_base_datos
-    DB_PASSWORD=tu_contraseña
-    DB_PORT=5432 # Puerto por defecto para servicios PostgreSQL
-    ```
-4. ### Instalación de dependencias
-    Ejecuta el siguiente comando para instalar las dependencias del proyecto:
-    ```bash
-    npm install
-    ```
-5. ### Levantar la aplicación
-    - #### Con Docker
-        ```bash
-        docker compose up -d --build
-        ```
-        Esto construirá la imagen Docker y levantará un contenedor con la API escuchando en el puerto ``3000`` en segundo plano.
-    - #### Sin Docker
-        Si prefieres ejecutar la aplicación directamente:
-        ```bash
-        npm src/app.js
-        ```
----
-## 3. Endpoints
-### ``POST /api/login``
-Realiza el login de un usuario.
-- Body:
-    ```json
-    {
-        "username": "usuario",
-        "user_password": "contraseña"
-    }
-    ```
-- Respuestas:
-    - ``200 OK``: El usuario ha accedido correctamente.
-    - ``401 Unauthorized``: Contraseña incorrecta.
-    - ``404 Not Found``: Usuario no encontrado.
-    - ``403 Forbidden``: Usuario no verificado por un administrador.
+## Endpoints
 
-### ``POST /api/register``
-Registra un usuario.
-- Body:
-    ```json
-    {
-        "first_name": "nombre",
-        "last_name_1": "apellido1",
-        "last_name_2": "apellido2",
-        "username": "usuario",
-        "user_password": "contraseña",
-        "email": "correo@ejemplo.com"
-    }
-    ```
-- Respuestas:
-    - ``201 Created``: Usuario registrado correctamente.
-    - ``400 Bad request``: El nombre de usuario o correo ya están en uso.
+### `POST /api/login`
+Login a user.
+- Request body:
+```json
+{
+  "identifier": "username_or_email",
+  "user_password": "password"
+}
+```
+- Responses:
+  - `200 OK` → Login successful
+  - `401 Unauthorized` → Incorrect password
+  - `404 Not Found` → User not found
+  - `400 Bad Request` → Missing credentials
 
-### ``POST /api/settings``
-Verifica si un usuario es administrador.
-- Body:
-    ```json
-    {
-        "user_id": "id_usuario"
-    }
-    ```
-- Respuestas:
-    - ``200 OK``: El usuario es administrador o no.
-    - ``500 Internal Server Error``: Error al verificar el estatus del usuario.
+### `POST /api/create`
+Create/register a new user.
+- Request body:
+```json
+{
+  "username": "user",
+  "email": "user@example.com",
+  "user_password": "password"
+}
+```
+- Responses:
+  - `201 Created` → User created successfully
+  - `500 Internal Server Error` → Server error
+
+### `GET /api/items`
+Retrieve all users/items.
+- Response:
+```json
+[
+  { "id": 1, "username": "user1", "email": "user1@example.com" },
+  { "id": 2, "username": "user2", "email": "user2@example.com" }
+]
+```
+
+### `GET /api/item/:id`
+Retrieve a single user/item by ID.
+- Response:
+```json
+{ "id": 1, "username": "user1", "email": "user1@example.com" }
+```
+
+### `PATCH /api/update/:id`
+Update a user/item by ID.
+- Request body: Only include fields to update:
+```json
+{
+  "username": "newname",
+  "email": "newemail@example.com"
+}
+```
+- Response:
+  - `200 OK` → Updated successfully
+  - `404 Not Found` → Item not found
+
+### `DELETE /api/delete/:id`
+Delete a user/item by ID.
+- Response:
+  - `200 OK` → Item deleted successfully
+  - `404 Not Found` → Item not found
 
 ---
-## 4. Modelo de Base de Datos
-La API se conecta a una base de datos con las siguientes características:
-- Servicio: PostgreSQL (se recomienda usar la versión PSQL16.3)
-- Codificación de los datos en ``UTF-8``
-- Un esquema ``public`` con dos tablas:
-    - ### Tabla ``user_list``
-        Esta tabla contiene la información de los usuarios:
-        | Campo | Tipo | Descripción |
-        |-------|------|-------------|
-        |id|SERIAL| Identificador único de usuario uuid4 (clave primaria)|
-        |first_name|VARCHAR|Nombre (real) del usuario|
-        |last_name_1|VARCHAR|Primer apellido del usuario|
-        |last_name_2|VARCHAR|Segundo apellido del usuario (opcional)|
-        |username|VARCHAR|Nombre de usuario en la aplicación (único)|
-        |user_password|VARCHAR|Contraseña (hasheada) del usuario|
-        |email|VARCHAR|Correo electrónico del usuario|
-        |verified|BOOLEAN|Indica si el usuario está verificado|
 
-    - ### Tabla ``admin_list``
-        Esta tabla contiene los identificadores de los usuarios que son administradores:
-        | Campo | Tipo | Descripción |
-        |-------|------|-------------|
-        |admin_id|SERIAL| Identificador único de administrador uuid4 (clave primaria)|
-        |user_id|SERIAL| Identificador único de usuario uuid4 (clave foránea [user_list])|
+## Database Model for testing
+- **Database**: PostgreSQL (recommended version 16.3+)
+- **Encoding**: UTF-8
+- **Schema**: `public`
+- **Table**: `users`
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | id | SERIAL | Primary key, unique user identifier |
+  | username | VARCHAR | User's application username (unique) |
+  | email | VARCHAR | User's email address (unique) |
+  | user_password | VARCHAR | Hashed password for authentication |
+
+> You can add or remove columns via `.env` without modifying the source code.
 
 ---
-## 5. Despliegue
-Si deseas desplegar la API en un servidor, asegúrate de que las variables de entorno estén configuradas correctamente en el servidor y que la base de datos PostgreSQL esté accesible desde la ubicación del servidor.
-1. ### Construir la imagen de Docker:
-    ```bash
-    docker build -t baronette-data-api .
-    ```
-2. ### Ejecutar el contenedor:
-    ```bash
-    docker run -d -p 3000:3000 --env-file .env baronette-data-api
-    ```
-***También es posible ejecutar el comando explicado anteriormente: ``docker compose up -d --build``. Hay que tener el cuenta que antes de ejecutarlo se deben hacer las modificaciones necesarias en el archivo ``docker-compose.yml``***
+
+## Deployment
+
+### Using Docker Compose
+```bash
+docker compose up -d --build
+```
+> Make sure `.env` variables are correctly set and PostgreSQL is accessible.
 
 ---
-## 6. Dependencias
-- Express: Framework de Node.js para desarrollar servidores web.
-- bcrypt: Middleware para encriptar y verificar datos sensibles.
-- body-parser: Middleware para procesar datos en formato JSON.
-- CORS: Middleware para habilitar Cross-Origin Resource Sharing.
-- dotenv: Middleware para cargar variables de entorno desde un archivo ``env``.
-- pg: Cliente de Node.js para PostgreSQL.
+
+## Dependencies
+- Express → Node.js web framework
+- bcrypt → Password hashing and verification
+- body-parser → Parsing JSON and URL-encoded request bodies
+- CORS → Cross-origin requests handling
+- dotenv → Environment variable management
+- pg → PostgreSQL client for Node.js
 
 ---
-## 7. Licencia
-Este proyecto está licenciado bajo la licencia MIT:
+
+## License
 ```txt
 MIT License
 
-Copyright (c) 2025 Propstg
+Copyright (c) 2025
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -192,4 +225,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
----
