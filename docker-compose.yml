@@ -1,0 +1,14 @@
+services:
+  api-webtest:
+    container_name: api-webtest
+    image: httpd
+    volumes:
+      - ./html/:/usr/local/apache2/htdocs/
+    ports:
+      - 80:80
+    networks:
+      - webtest
+
+networks:
+  webtest:
+    external: true
