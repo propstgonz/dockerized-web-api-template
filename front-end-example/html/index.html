@@ -1,13 +1,53 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Página de Inicio</title>
+  <title>Home Page</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #74b9ff, #a29bfe);
+      color: #2d3436;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #fff;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+    }
+
+    a {
+      display: inline-block;
+      text-decoration: none;
+      background: #fff;
+      color: #2d3436;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 12px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    a:hover {
+      background: #2d3436;
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
 <body>
-  <h1>Bienvenido</h1>
-  <a href="login.html">Iniciar Sesión</a>
-  <br>
-  <a href="register.html">Registrarse</a>
+  <h1>Welcome</h1>
+  <a href="login.html">Log In</a>
+  <a href="register.html">Sign Up</a>
+  <a href="dashboard.html">Go to Dashboard</a>
 </body>
 </html>

@@ -45,7 +45,7 @@ form.addEventListener('submit', async function(event) {
         if (response.ok) {
             // If successful, show a success message and redirect to login page
             alert('You have successfully registered!');
-            window.location.href = "https://baronette.es/login";
+            window.location.href = "http://localhost/login.html";
         } else {
             // If there was an error, show the error message from the server
             alert(result.message || `Error ${response.status}: ${response.statusText}`);

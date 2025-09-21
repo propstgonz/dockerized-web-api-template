@@ -1,63 +1,85 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login de Usuario</title>
+  <title>User Login</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #a29bfe);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
     }
     form {
-      background-color: #fff;
+      background: #fff;
       padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      width: 300px;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      width: 320px;
       display: flex;
       flex-direction: column;
     }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #2d3436;
+    }
     label {
       margin-top: 10px;
-      margin-bottom: 5px;
       font-weight: bold;
+      color: #2d3436;
     }
     input {
-      padding: 8px;
+      padding: 12px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 12px;
+      margin-top: 5px;
+      font-size: 14px;
     }
     button {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #4CAF50;
-      color: white;
+      margin-top: 20px;
+      padding: 12px;
+      background: #2d3436;
+      color: #fff;
       border: none;
-      border-radius: 4px;
+      border-radius: 12px;
       cursor: pointer;
       font-size: 16px;
+      transition: all 0.3s ease;
     }
     button:hover {
-      background-color: #45a049;
+      background: #000;
+      transform: translateY(-2px);
+    }
+    a {
+      text-align: center;
+      margin-top: 15px;
+      color: #2d3436;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
   <form id="login-form">
-    <label>Username o Email:</label>
+    <h1>Login</h1>
+    <label>Username or Email:</label>
     <input type="text" id="identifier" required />
 
     <label>Password:</label>
     <input type="password" id="user_password" required />
 
-    <button type="submit">Login</button>
+    <button type="submit">Log In</button>
+
+    <a href="register.html">Don’t have an account? Sign up</a>
   </form>
 
   <script type="module" src="./api/login.js"></script>
