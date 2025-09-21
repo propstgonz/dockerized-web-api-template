@@ -7,21 +7,24 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// CORS seguro
+// Secure CORS configuration
 const corsOptions = {
-  origin: '*',
+  origin: '*', // Allow all origins (for production, restrict this!)
   methods: ['GET','POST','PATCH','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // soporta preflight
+app.options('*', cors(corsOptions)); // Enable preflight requests
 
+// Parse incoming JSON and URL-encoded form data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Use API routes under /api
 app.use('/api', routes);
 
+// Start the server
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
 });

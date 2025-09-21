@@ -1,6 +1,6 @@
 /**
  * schemaConfig.js
- * Dynamically loads table and column configuration from .env
+ * Loads table and column configuration from environment variables
  */
 
 require('dotenv').config();
